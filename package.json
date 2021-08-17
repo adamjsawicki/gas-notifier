@@ -1,0 +1,29 @@
+{
+  "name": "low-gas-notifier",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "scripts" : {
+    "build" : "tsc",
+    "clean" : "rm -rf dist/",
+    "start" : "yarn build && node dist/index.js",
+    "watch" : "tsc -w"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cron": "^1.8.2",
+    "node-notifier": "^10.0.0",
+    "typescript": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/cron": "^1.7.3",
+    "@types/node-notifier": "^8.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/parser": "^4.29.2",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "nodemon": "^2.0.12",
+    "prettier-eslint-cli": "^5.0.1"
+  }
+}
