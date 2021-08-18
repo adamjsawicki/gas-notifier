@@ -1,23 +1,19 @@
 # gas-notifier
 
-Small repo used to send a desktop notification when gas is low.
+Small repo used to send a desktop notification for a variety of tasks.
 
 Currently implemented for:
-* ETH
+* low gas - when ETH gas is below a certain `threshold`
+* mirror prices - displaying prices for assets listed on [Mirror](https://terra.mirror.finance)
 
-
-Future development:
-* Allow for other types of notifications
+Roadmap:
+1. Add other asset prices
+2. Allow for other types of notifications
     * text
     * email
-    * slack
     * telegram
-* Add other chains
-* More configuration
-    * cronTime
-    * Which gasValue to use for the notification
-        * average, slow, etc
-* Turn into server
+3. Put behind a server
+4. Allow action to be taken
 
 ## Usage
 
@@ -31,9 +27,22 @@ cd gas-notifier
 # Install deps
 yarn install
 
-# Start the notifier
-yarn start
+# Start the notifier, passing in one of the acceptable CLI args (see below)
+yarn start mirror gas
 ```
 
+### CLI Args
+Current implementation takes CLI args to determine which notifiers to run.
+
+#### Options
+* `gas`
+* `mirror`
+
+
 ## Configuration
-Currently, the only configuration variable available is `threshold`, which indicates under which value to send a notification (denominated in gwei).
+
+### Low Gas
+* `threshold: number` - which indicates under which value to send a notification (denominated in gwei)
+
+### Mirror Prices
+* `symbols: string[]` - indicates which symbols to search for in the mirror protocol

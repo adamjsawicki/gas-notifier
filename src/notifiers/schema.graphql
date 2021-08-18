@@ -1,0 +1,385 @@
+type AccountVoted {
+  pollId: String!
+  amount: String!
+  voteOption: String!
+}
+
+type Account {
+  address: String!
+  haveBalanceHistory: Boolean
+
+  # balance of specific symbol
+  balance: String
+
+  # all asset balances
+  balances: [AssetBalance!]
+  accumulatedGovReward: String
+  voteHistory: [AccountVoted!]
+}
+
+type AccountBalance {
+  address: String!
+  balance: String!
+}
+
+type Asset {
+  symbol: String!
+  name: String!
+  description: String!
+  token: String!
+  pair: String!
+  lpToken: String!
+  status: AssetStatus!
+  positions: AssetPositions!
+  prices: AssetPrices
+  statistic: AssetStatistic
+  news: [AssetNews!]
+}
+
+enum AssetStatus {
+  NONE
+  LISTED
+  DELISTED
+  COLLATERAL
+  PRE_IPO
+}
+
+type AssetBalance {
+  token: String!
+  balance: String!
+
+  # average purchase price
+  averagePrice: String!
+}
+
+type AssetNews {
+  datetime: DateTime!
+  headline: String!
+  source: String!
+  url: String!
+  summary: String!
+}
+
+# The javascript `Date` as string. Type represents date and time as the ISO Date string.
+scalar DateTime
+
+type AssetPositions {
+  mint: String!
+  pool: String!
+  uusdPool: String!
+  lpShares: String!
+  lpStaked: String!
+}
+
+type AssetPrices {
+  # price
+  price: String
+
+  # price at a specified time
+  priceAt(timestamp: Float!): String
+
+  # price history, max row is 500
+  history(
+    # unit is minute
+    interval: Float!
+
+    # timestamp
+    to: Float!
+
+    # timestamp
+    from: Float!
+  ): [PriceAt!]
+
+  # open/high/low/close price
+  ohlc(
+    # timestamp
+    to: Float!
+
+    # timestamp
+    from: Float!
+  ): AssetOHLC
+
+  # oracle price
+  oraclePrice: String
+
+  # oracle price at a specified time
+  oraclePriceAt(timestamp: Float!): String
+
+  # oracle price history, max row is 500
+  oracleHistory(
+    # unit is minute
+    interval: Float!
+
+    # timestamp
+    to: Float!
+
+    # timestamp
+    from: Float!
+  ): [PriceAt!]
+}
+
+type AssetOHLC {
+  from: Float!
+  to: Float!
+  open: String!
+  high: String!
+  low: String!
+  close: String!
+}
+
+type AssetStatistic {
+  # liquidity value for long
+  liquidity(network: Network = COMBINE): String
+
+  # short value
+  shortValue(network: Network = COMBINE): String
+
+  # trading volume of latest 24h
+  volume(network: Network = COMBINE): String
+
+  # asset long/short apr
+  apr(network: Network = TERRA): APR
+
+  # asset market cap
+  marketCap(network: Network = COMBINE): String
+
+  # locked collateral value
+  collateralValue: String
+
+  # min collateral ratio
+  minCollateralRatio: String
+}
+
+enum Network {
+  TERRA
+  ETH
+  BSC
+  COMBINE
+}
+
+type APR {
+  # long farm apr
+  long: String!
+
+  # short farm apr
+  short: String!
+}
+
+type MirSupply {
+  circulating: String!
+  liquidity: String!
+  staked: String!
+}
+
+type PriceAt {
+  timestamp: Float
+  price: String
+}
+
+type ValueAt {
+  timestamp: Float!
+  value: String!
+}
+
+type TVL {
+  total: String!
+  liquidity: String!
+  collateral: String!
+  stakedMir: String!
+}
+
+type Cdp {
+  id: String!
+  address: String!
+  token: String!
+  mintAmount: String!
+  mintValue: String!
+  collateralToken: String!
+  collateralAmount: String!
+  collateralValue: String!
+  collateralRatio: String!
+  minCollateralRatio: String!
+}
+
+type LimitOrder {
+  id: String!
+  address: String!
+  token: String!
+  type: LimitOrderType!
+  price: String!
+  amount: String!
+  uusdAmount: String!
+  filledAmount: String!
+  filledUusdAmount: String!
+}
+
+enum LimitOrderType {
+  ASK
+  BID
+}
+
+type PeriodStatistic {
+  transactions: String!
+  volume: String!
+  feeVolume: String!
+  mirVolume: String!
+  activeUsers: String!
+}
+
+type Statistic {
+  network: Network!
+  assetMarketCap: String!
+  totalValueLocked: TVL!
+  collateralRatio: String!
+  latest24h: PeriodStatistic!
+  mirPrice: String!
+  mirSupply: MirSupply!
+  govAPR: String!
+  liquidityHistory(
+    # timestamp
+    to: Float!
+
+    # timestamp
+    from: Float!
+  ): [ValueAt!]
+  tradingHistory: [ValueAt!]
+  feeHistory(
+    # timestamp
+    to: Float!
+
+    # timestamp
+    from: Float!
+  ): [ValueAt!]
+  today: PeriodStatistic!
+  tradingVolumeHistory(
+    # timestamp
+    to: Float!
+
+    # timestamp
+    from: Float!
+  ): [ValueAt!]!
+}
+
+type Tx {
+  createdAt: DateTime!
+  id: Int!
+  height: Int!
+  txHash: String!
+  address: String!
+  type: TxType!
+  data: JSON!
+  token: String
+  datetime: DateTime!
+  fee: String!
+  memo: String
+}
+
+enum TxType {
+  BUY
+  SELL
+  SEND
+  RECEIVE
+  OPEN_POSITION
+  DEPOSIT_COLLATERAL
+  WITHDRAW_COLLATERAL
+  MINT
+  BURN
+  AUCTION
+  PROVIDE_LIQUIDITY
+  WITHDRAW_LIQUIDITY
+  STAKE
+  UNSTAKE
+  GOV_STAKE
+  GOV_UNSTAKE
+  GOV_CREATE_POLL
+  GOV_END_POLL
+  GOV_CAST_POLL
+  GOV_WITHDRAW_VOTING_REWARDS
+  WITHDRAW_REWARDS
+  CLAIM_AIRDROP
+  TERRA_SWAP
+  TERRA_SEND
+  TERRA_SWAP_SEND
+  TERRA_RECEIVE
+  REGISTRATION
+  BID_LIMIT_ORDER
+  ASK_LIMIT_ORDER
+  CANCEL_LIMIT_ORDER
+  EXECUTE_LIMIT_ORDER
+  WITHDRAW_UNLOCKED_UST
+  WITHDRAW_UNLOCKED_UST_ALL
+}
+
+# The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+scalar JSON
+
+input LimitOrderFilterOption {
+  token: String!
+  price: String!
+}
+
+type Query {
+  account(address: String!): Account
+  balance(token: String!, address: String!): AssetBalance
+  balances(address: String!): [AssetBalance!]!
+  balanceHistory(
+    # unit is minute
+    interval: Float!
+
+    # timestamp
+    to: Float!
+
+    # timestamp
+    from: Float!
+    address: String!
+  ): [ValueAt!]!
+  tradingVolume(
+    # timestamp
+    to: Float!
+
+    # timestamp
+    from: Float!
+    address: String!
+  ): String!
+  moonpayHistory(limit: Float = 1, transactionId: String!): JSON
+  airdrop(
+    address: String!
+
+    # TERRA or ETH
+    network: String = "TERRA"
+  ): JSON
+
+  # Get asset
+  asset(token: String!): Asset!
+
+  # Get all listed assets
+  assets: [Asset!]!
+
+  # Get cdps
+  cdps(address: [String!], tokens: [String!], maxRatio: Float!): [Cdp!]!
+
+  # Get liquidation target cdps
+  liquidations: [Cdp!]!
+
+  # Limit orders of token
+  limitOrders(
+    options: [LimitOrderFilterOption!]!
+    type: LimitOrderType!
+  ): [LimitOrder!]!
+  statistic(network: Network = COMBINE): Statistic!
+  richlist(
+    limit: Float = 1000
+    offset: Float = 0
+    token: String!
+  ): [AccountBalance!]!
+  txs(
+    limit: Float = 100
+    offset: Float = 0
+    tag: String
+    account: String!
+  ): [Tx!]!
+}
+
+type Mutation {
+  connect(email: String, isAppUser: Boolean = false, address: String!): Account
+}
